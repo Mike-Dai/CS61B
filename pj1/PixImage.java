@@ -182,105 +182,108 @@ public class PixImage {
     if (numIterations <= 0) {
       return this;
     }
-    int red = 0, green = 0, blue = 0;
+    
     PixImage newimg = new PixImage(this.width, this.height);
     PixImage tmpimg = new PixImage(this.width, this.height);
     for (int i = 0; i < this.width; i++) {
-      for (int j = 0; j < this.height; j++) {
-        newimg.setPixel(i, j, this.getRed(i, j), this.getGreen(i, j), this.getBlue(i, j));
+        for (int j = 0; j < this.height; j++) {
+          newimg.setPixel(i, j, this.getRed(i, j), this.getGreen(i, j), this.getBlue(i, j));
+        }
       }
-    }
-    for (int i = 0; i < newimg.width; i++) {
-      for (int j = 0; j < newimg.height; j++) {
-        if (i == 0 && j == 0) {
-          red = (newimg.getRed(i, j) + newimg.getRed(i + 1, j) + newimg.getRed(i, j + 1) + newimg.getRed(i + 1, j + 1)) / 4;
-          green = (newimg.getGreen(i, j) + newimg.getGreen(i + 1, j) + newimg.getGreen(i, j + 1) + newimg.getGreen(i + 1, j + 1)) / 4;
-          blue = (newimg.getBlue(i, j) + newimg.getBlue(i + 1, j) + newimg.getBlue(i, j + 1) + newimg.getBlue(i + 1, j + 1)) / 4;
-        }
-        else if (i == 0 && j == newimg.height - 1) {
-          red = (newimg.getRed(i, j) + newimg.getRed(i, j - 1) + newimg.getRed(i + 1, j) + newimg.getRed(i + 1, j - 1)) / 4;
-          green = (newimg.getGreen(i, j) + newimg.getGreen(i, j - 1) + newimg.getGreen(i + 1, j) + newimg.getGreen(i + 1, j - 1)) / 4;
-          blue = (newimg.getBlue(i, j) + newimg.getBlue(i, j - 1) + newimg.getBlue(i + 1, j) + newimg.getBlue(i + 1, j - 1)) / 4;          
-        }
-        else if (i == newimg.width - 1 && j == 0) {
-          
-          red = (newimg.getRed(i, j) + newimg.getRed(i - 1, j) + newimg.getRed(i, j + 1) + newimg.getRed(i - 1, j + 1)) / 4;
-          green = (newimg.getGreen(i, j) + newimg.getGreen(i - 1, j) + newimg.getGreen(i, j + 1) + newimg.getGreen(i - 1, j + 1)) / 4;
-          blue = (newimg.getBlue(i, j) + newimg.getBlue(i - 1, j) + newimg.getBlue(i, j + 1) + newimg.getBlue(i - 1, j + 1)) / 4;
-          /*
-          for (int p = i - 1; p <= i; p++) {
-            for (int q = j; q <= j + 1; q++) {
-              red += newimg.getRed(p, q);
-              green += newimg.getGreen(p, q);
-              blue += newimg.getBlue(p, q);
-            }
+    for (int iter = 0; iter < numIterations; iter++) {
+      int red = 0, green = 0, blue = 0;
+      for (int i = 0; i < newimg.width; i++) {
+        for (int j = 0; j < newimg.height; j++) {
+          if (i == 0 && j == 0) {
+            red = (newimg.getRed(i, j) + newimg.getRed(i + 1, j) + newimg.getRed(i, j + 1) + newimg.getRed(i + 1, j + 1)) / 4;
+            green = (newimg.getGreen(i, j) + newimg.getGreen(i + 1, j) + newimg.getGreen(i, j + 1) + newimg.getGreen(i + 1, j + 1)) / 4;
+            blue = (newimg.getBlue(i, j) + newimg.getBlue(i + 1, j) + newimg.getBlue(i, j + 1) + newimg.getBlue(i + 1, j + 1)) / 4;
           }
-          red /= 4;
-          green /= 4;
-          blue /= 4;
-          */
-        }
-        else if (i == newimg.width - 1 && j == newimg.height - 1) {
-          red = (newimg.getRed(i, j) + newimg.getRed(i - 1, j) + newimg.getRed(i, j - 1) + newimg.getRed(i - 1, j - 1)) / 4;
-          green = (newimg.getGreen(i, j) + newimg.getGreen(i - 1, j) + newimg.getGreen(i, j - 1) + newimg.getGreen(i - 1, j - 1)) / 4;
-          blue = (newimg.getBlue(i, j) + newimg.getBlue(i - 1, j) + newimg.getBlue(i, j - 1) + newimg.getBlue(i - 1, j - 1)) / 4;
-        }
-        else if (i == 0) {
-          
-          red = (newimg.getRed(i, j) + newimg.getRed(i + 1, j) + newimg.getRed(i, j + 1) + newimg.getRed(i + 1, j + 1) + newimg.getRed(i ,j - 1) + newimg.getRed(i + 1, j - 1)) / 6;
-          green = (newimg.getGreen(i, j) + newimg.getGreen(i + 1, j) + newimg.getGreen(i, j + 1) + newimg.getGreen(i + 1, j + 1) + newimg.getGreen(i ,j - 1) + newimg.getGreen(i + 1, j - 1)) / 6;
-          blue = (newimg.getBlue(i, j) + newimg.getBlue(i + 1, j) + newimg.getBlue(i, j + 1) + newimg.getBlue(i + 1, j + 1) + newimg.getBlue(i ,j - 1) + newimg.getBlue(i + 1, j - 1)) / 6;
-          /*
-          for (int p = i; p <= i + 1; p++) {
-            for (int q = j - 1; q <= j + 1; q++) {
-              red += newimg.getRed(p, q);
-              green += newimg.getGreen(p, q);
-              blue += newimg.getBlue(p, q);
-            }
+          else if (i == 0 && j == newimg.height - 1) {
+            red = (newimg.getRed(i, j) + newimg.getRed(i, j - 1) + newimg.getRed(i + 1, j) + newimg.getRed(i + 1, j - 1)) / 4;
+            green = (newimg.getGreen(i, j) + newimg.getGreen(i, j - 1) + newimg.getGreen(i + 1, j) + newimg.getGreen(i + 1, j - 1)) / 4;
+            blue = (newimg.getBlue(i, j) + newimg.getBlue(i, j - 1) + newimg.getBlue(i + 1, j) + newimg.getBlue(i + 1, j - 1)) / 4;          
           }
-          red /= 6;
-          green /= 6;
-          blue /= 6;
-          */          
-        }
-        else if (i == newimg.width - 1) {
-          red = (newimg.getRed(i, j) + newimg.getRed(i - 1, j) + newimg.getRed(i, j + 1) + newimg.getRed(i - 1, j + 1) + newimg.getRed(i ,j - 1) + newimg.getRed(i - 1, j - 1)) / 6;
-          green = (newimg.getGreen(i, j) + newimg.getGreen(i - 1, j) + newimg.getGreen(i, j + 1) + newimg.getGreen(i - 1, j + 1) + newimg.getGreen(i ,j - 1) + newimg.getGreen(i - 1, j - 1)) / 6;
-          blue = (newimg.getBlue(i, j) + newimg.getBlue(i - 1, j) + newimg.getBlue(i, j + 1) + newimg.getBlue(i - 1, j + 1) + newimg.getBlue(i ,j - 1) + newimg.getBlue(i - 1, j - 1)) / 6;          
-        }
-        else if (j == 0) {
-          red = (newimg.getRed(i, j) + newimg.getRed(i + 1, j) + newimg.getRed(i, j + 1) + newimg.getRed(i + 1, j + 1) + newimg.getRed(i - 1 ,j) + newimg.getRed(i - 1, j + 1)) / 6;
-          green = (newimg.getGreen(i, j) + newimg.getGreen(i + 1, j) + newimg.getGreen(i, j + 1) + newimg.getGreen(i + 1, j + 1) + newimg.getGreen(i - 1 ,j) + newimg.getGreen(i - 1, j + 1)) / 6;
-          blue = (newimg.getBlue(i, j) + newimg.getBlue(i + 1, j) + newimg.getBlue(i, j + 1) + newimg.getBlue(i + 1, j + 1) + newimg.getBlue(i - 1 ,j) + newimg.getBlue(i - 1, j + 1)) / 6;
-        }
-        else if (j == newimg.height - 1) {
-          red = (newimg.getRed(i, j) + newimg.getRed(i + 1, j) + newimg.getRed(i, j - 1) + newimg.getRed(i + 1, j - 1) + newimg.getRed(i - 1 ,j) + newimg.getRed(i - 1, j - 1)) / 6;
-          green = (newimg.getGreen(i, j) + newimg.getGreen(i + 1, j) + newimg.getGreen(i, j - 1) + newimg.getGreen(i + 1, j - 1) + newimg.getGreen(i - 1 ,j) + newimg.getGreen(i - 1, j - 1)) / 6;
-          blue = (newimg.getBlue(i, j) + newimg.getBlue(i + 1, j) + newimg.getBlue(i, j - 1) + newimg.getBlue(i + 1, j - 1) + newimg.getBlue(i - 1 ,j) + newimg.getBlue(i - 1, j - 1)) / 6;
-        }
-        else {
-          /*
-          for (int p = i - 1; p <= i + 1; p++) {
-            for (int q = j - 1; q <= j + 1; q++) {
-              red += newimg.getRed(p, q);
-              green += newimg.getGreen(p, q);
-              blue += newimg.getBlue(p, q);
+          else if (i == newimg.width - 1 && j == 0) {
+            
+            red = (newimg.getRed(i, j) + newimg.getRed(i - 1, j) + newimg.getRed(i, j + 1) + newimg.getRed(i - 1, j + 1)) / 4;
+            green = (newimg.getGreen(i, j) + newimg.getGreen(i - 1, j) + newimg.getGreen(i, j + 1) + newimg.getGreen(i - 1, j + 1)) / 4;
+            blue = (newimg.getBlue(i, j) + newimg.getBlue(i - 1, j) + newimg.getBlue(i, j + 1) + newimg.getBlue(i - 1, j + 1)) / 4;
+            /*
+            for (int p = i - 1; p <= i; p++) {
+              for (int q = j; q <= j + 1; q++) {
+                red += newimg.getRed(p, q);
+                green += newimg.getGreen(p, q);
+                blue += newimg.getBlue(p, q);
+              }
             }
+            red /= 4;
+            green /= 4;
+            blue /= 4;
+            */
           }
-          red /= 9;
-          green /= 9;
-          blue /= 9;
-          */
-          red = (newimg.getRed(i - 1, j - 1) + newimg.getRed(i - 1, j) + newimg.getRed(i - 1, j + 1) + newimg.getRed(i, j - 1) + newimg.getRed(i, j) + newimg.getRed(i, j + 1) + newimg.getRed(i + 1, j - 1) + newimg.getRed(i + 1, j) + newimg.getRed(i + 1, j + 1)) / 9;
-          green = (newimg.getGreen(i - 1, j - 1) + newimg.getGreen(i - 1, j) + newimg.getGreen(i - 1, j + 1) + newimg.getGreen(i, j - 1) + newimg.getGreen(i, j) + newimg.getGreen(i, j + 1) + newimg.getGreen(i + 1, j - 1) + newimg.getGreen(i + 1, j) + newimg.getGreen(i + 1, j + 1)) / 9;
-          blue = (newimg.getBlue(i - 1, j - 1) + newimg.getBlue(i - 1, j) + newimg.getBlue(i - 1, j + 1) + newimg.getBlue(i, j - 1) + newimg.getBlue(i, j) + newimg.getBlue(i, j + 1) + newimg.getBlue(i + 1, j - 1) + newimg.getBlue(i + 1, j) + newimg.getBlue(i + 1, j + 1)) / 9;
+          else if (i == newimg.width - 1 && j == newimg.height - 1) {
+            red = (newimg.getRed(i, j) + newimg.getRed(i - 1, j) + newimg.getRed(i, j - 1) + newimg.getRed(i - 1, j - 1)) / 4;
+            green = (newimg.getGreen(i, j) + newimg.getGreen(i - 1, j) + newimg.getGreen(i, j - 1) + newimg.getGreen(i - 1, j - 1)) / 4;
+            blue = (newimg.getBlue(i, j) + newimg.getBlue(i - 1, j) + newimg.getBlue(i, j - 1) + newimg.getBlue(i - 1, j - 1)) / 4;
+          }
+          else if (i == 0) {
+            
+            red = (newimg.getRed(i, j) + newimg.getRed(i + 1, j) + newimg.getRed(i, j + 1) + newimg.getRed(i + 1, j + 1) + newimg.getRed(i ,j - 1) + newimg.getRed(i + 1, j - 1)) / 6;
+            green = (newimg.getGreen(i, j) + newimg.getGreen(i + 1, j) + newimg.getGreen(i, j + 1) + newimg.getGreen(i + 1, j + 1) + newimg.getGreen(i ,j - 1) + newimg.getGreen(i + 1, j - 1)) / 6;
+            blue = (newimg.getBlue(i, j) + newimg.getBlue(i + 1, j) + newimg.getBlue(i, j + 1) + newimg.getBlue(i + 1, j + 1) + newimg.getBlue(i ,j - 1) + newimg.getBlue(i + 1, j - 1)) / 6;
+            /*
+            for (int p = i; p <= i + 1; p++) {
+              for (int q = j - 1; q <= j + 1; q++) {
+                red += newimg.getRed(p, q);
+                green += newimg.getGreen(p, q);
+                blue += newimg.getBlue(p, q);
+              }
+            }
+            red /= 6;
+            green /= 6;
+            blue /= 6;
+            */          
+          }
+          else if (i == newimg.width - 1) {
+            red = (newimg.getRed(i, j) + newimg.getRed(i - 1, j) + newimg.getRed(i, j + 1) + newimg.getRed(i - 1, j + 1) + newimg.getRed(i ,j - 1) + newimg.getRed(i - 1, j - 1)) / 6;
+            green = (newimg.getGreen(i, j) + newimg.getGreen(i - 1, j) + newimg.getGreen(i, j + 1) + newimg.getGreen(i - 1, j + 1) + newimg.getGreen(i ,j - 1) + newimg.getGreen(i - 1, j - 1)) / 6;
+            blue = (newimg.getBlue(i, j) + newimg.getBlue(i - 1, j) + newimg.getBlue(i, j + 1) + newimg.getBlue(i - 1, j + 1) + newimg.getBlue(i ,j - 1) + newimg.getBlue(i - 1, j - 1)) / 6;          
+          }
+          else if (j == 0) {
+            red = (newimg.getRed(i, j) + newimg.getRed(i + 1, j) + newimg.getRed(i, j + 1) + newimg.getRed(i + 1, j + 1) + newimg.getRed(i - 1 ,j) + newimg.getRed(i - 1, j + 1)) / 6;
+            green = (newimg.getGreen(i, j) + newimg.getGreen(i + 1, j) + newimg.getGreen(i, j + 1) + newimg.getGreen(i + 1, j + 1) + newimg.getGreen(i - 1 ,j) + newimg.getGreen(i - 1, j + 1)) / 6;
+            blue = (newimg.getBlue(i, j) + newimg.getBlue(i + 1, j) + newimg.getBlue(i, j + 1) + newimg.getBlue(i + 1, j + 1) + newimg.getBlue(i - 1 ,j) + newimg.getBlue(i - 1, j + 1)) / 6;
+          }
+          else if (j == newimg.height - 1) {
+            red = (newimg.getRed(i, j) + newimg.getRed(i + 1, j) + newimg.getRed(i, j - 1) + newimg.getRed(i + 1, j - 1) + newimg.getRed(i - 1 ,j) + newimg.getRed(i - 1, j - 1)) / 6;
+            green = (newimg.getGreen(i, j) + newimg.getGreen(i + 1, j) + newimg.getGreen(i, j - 1) + newimg.getGreen(i + 1, j - 1) + newimg.getGreen(i - 1 ,j) + newimg.getGreen(i - 1, j - 1)) / 6;
+            blue = (newimg.getBlue(i, j) + newimg.getBlue(i + 1, j) + newimg.getBlue(i, j - 1) + newimg.getBlue(i + 1, j - 1) + newimg.getBlue(i - 1 ,j) + newimg.getBlue(i - 1, j - 1)) / 6;
+          }
+          else {
+            /*
+            for (int p = i - 1; p <= i + 1; p++) {
+              for (int q = j - 1; q <= j + 1; q++) {
+                red += newimg.getRed(p, q);
+                green += newimg.getGreen(p, q);
+                blue += newimg.getBlue(p, q);
+              }
+            }
+            red /= 9;
+            green /= 9;
+            blue /= 9;
+            */
+            red = (newimg.getRed(i - 1, j - 1) + newimg.getRed(i - 1, j) + newimg.getRed(i - 1, j + 1) + newimg.getRed(i, j - 1) + newimg.getRed(i, j) + newimg.getRed(i, j + 1) + newimg.getRed(i + 1, j - 1) + newimg.getRed(i + 1, j) + newimg.getRed(i + 1, j + 1)) / 9;
+            green = (newimg.getGreen(i - 1, j - 1) + newimg.getGreen(i - 1, j) + newimg.getGreen(i - 1, j + 1) + newimg.getGreen(i, j - 1) + newimg.getGreen(i, j) + newimg.getGreen(i, j + 1) + newimg.getGreen(i + 1, j - 1) + newimg.getGreen(i + 1, j) + newimg.getGreen(i + 1, j + 1)) / 9;
+            blue = (newimg.getBlue(i - 1, j - 1) + newimg.getBlue(i - 1, j) + newimg.getBlue(i - 1, j + 1) + newimg.getBlue(i, j - 1) + newimg.getBlue(i, j) + newimg.getBlue(i, j + 1) + newimg.getBlue(i + 1, j - 1) + newimg.getBlue(i + 1, j) + newimg.getBlue(i + 1, j + 1)) / 9;
+          }
+          tmpimg.setPixel(i, j, (short)red, (short)green, (short)blue);
         }
-        tmpimg.setPixel(i, j, (short)red, (short)green, (short)blue);
       }
-    }
-    for (int i = 0; i < newimg.width; i++) {
-      for (int j = 0; j < newimg.height; j++) {
-        newimg.setPixel(i, j, tmpimg.getRed(i, j), tmpimg.getGreen(i, j), tmpimg.getBlue(i, j));
+      for (int i = 0; i < newimg.width; i++) {
+        for (int j = 0; j < newimg.height; j++) {
+          newimg.setPixel(i, j, tmpimg.getRed(i, j), tmpimg.getGreen(i, j), tmpimg.getBlue(i, j));
+        }
       }
     }
     return newimg;
@@ -311,6 +314,119 @@ public class PixImage {
     return intensity;
   }
 
+  public short reflectRed(int x, int y) {
+  	short red = 0;
+  	if (x == -1) {
+  		if (y == -1) {
+  			red = getRed(0, 0);
+  		}
+  		else if (y == height) {
+  			red = getRed(0, height - 1);
+  		}
+  		else {
+  			red = getRed(0, y);
+  		}
+  	}
+  	else if (x == width) {
+  		if (y == -1) {
+  			red = getRed(width - 1, 0);
+  		}
+  		else if (y == height) {
+  			red = getRed(width - 1, height - 1);
+  		}
+  		else {
+  			red = getRed(width - 1, y);
+  		}  		
+  	}
+  	else {
+  		if (y == -1) {
+  			red = getRed(x, 0);
+  		}
+  		else if (y == height) {
+  			red = getRed(x, height - 1);
+  		}
+  		else {
+  			red = getRed(x, y);
+  		}  		  		
+  	}
+  	return red;
+  }
+
+  public short reflectGreen(int x, int y) {
+  	short green = 0;
+  	if (x == -1) {
+  		if (y == -1) {
+  			green = getGreen(0, 0);
+  		}
+  		else if (y == height) {
+  			green = getGreen(0, height - 1);
+  		}
+  		else {
+  			green = getGreen(0, y);
+  		}
+  	}
+  	else if (x == width) {
+  		if (y == -1) {
+  			green = getGreen(width - 1, 0);
+  		}
+  		else if (y == height) {
+  			green = getGreen(width - 1, height - 1);
+  		}
+  		else {
+  			green = getGreen(width - 1, y);
+  		}  		
+  	}
+  	else {
+  		if (y == -1) {
+  			green = getGreen(x, 0);
+  		}
+  		else if (y == height) {
+  			green = getGreen(x, height - 1);
+  		}
+  		else {
+  			green = getGreen(x, y);
+  		}  		  		
+  	}
+  	return green;
+  }
+
+  public short reflectBlue(int x, int y) {
+  	short blue = 0;
+  	if (x == -1) {
+  		if (y == -1) {
+  			blue = getBlue(0, 0);
+  		}
+  		else if (y == height) {
+  			blue = getBlue(0, height - 1);
+  		}
+  		else {
+  			blue = getBlue(0, y);
+  		}
+  	}
+  	else if (x == width) {
+  		if (y == -1) {
+  			blue = getBlue(width - 1, 0);
+  		}
+  		else if (y == height) {
+  			blue = getBlue(width - 1, height - 1);
+  		}
+  		else {
+  			blue = getBlue(width - 1, y);
+  		}  		
+  	}
+  	else {
+  		if (y == -1) {
+  			blue = getBlue(x, 0);
+  		}
+  		else if (y == height) {
+  			blue = getBlue(x, height - 1);
+  		}
+  		else {
+  			blue = getBlue(x, y);
+  		}  		  		
+  	}
+  	return blue;
+  }
   /**
    * sobelEdges() applies the Sobel operator, identifying edges in "this"
    * image.  The Sobel operator computes a magnitude that represents how
@@ -328,7 +444,21 @@ public class PixImage {
    */
   public PixImage sobelEdges() {
     // Replace the following line with your solution.
-    return this;
+    PixImage sobel = new PixImage(this.width, this.height);
+    for (int i = 0; i < this.width; i++) {
+    	for (int j = 0; j < this.height; j++) {
+    		long gxred = reflectRed(i - 1, j - 1) * 1 + reflectRed(i + 1, j - 1) * (-1) + reflectRed(i - 1, j) * 2 + reflectRed(i + 1, j) * (-2) + reflectRed(i - 1, j + 1) - reflectRed(i + 1, j + 1);
+    		long gyred = reflectRed(i - 1, j - 1) * 1 + reflectRed(i - 1, j + 1) * (-1) + reflectRed(i, j - 1) * 2 + reflectRed(i, j + 1) * (-2) + reflectRed(i + 1, j - 1) - reflectRed(i + 1, j + 1);
+    		long gxgreen = reflectGreen(i - 1, j - 1) * 1 + reflectGreen(i + 1, j - 1) * (-1) + reflectGreen(i - 1, j) * 2 + reflectGreen(i + 1, j) * (-2) + reflectGreen(i - 1, j + 1) - reflectGreen(i + 1, j + 1);
+    		long gygreen = reflectGreen(i - 1, j - 1) * 1 + reflectGreen(i - 1, j + 1) * (-1) + reflectGreen(i, j - 1) * 2 + reflectGreen(i, j + 1) * (-2) + reflectGreen(i + 1, j - 1) - reflectGreen(i + 1, j + 1);
+    		long gxblue = reflectBlue(i - 1, j - 1) * 1 + reflectBlue(i + 1, j - 1) * (-1) + reflectBlue(i - 1, j) * 2 + reflectBlue(i + 1, j) * (-2) + reflectBlue(i - 1, j + 1) - reflectBlue(i + 1, j + 1);
+    		long gyblue = reflectBlue(i - 1, j - 1) * 1 + reflectBlue(i - 1, j + 1) * (-1) + reflectBlue(i, j - 1) * 2 + reflectBlue(i, j + 1) * (-2) + reflectBlue(i + 1, j - 1) - reflectBlue(i + 1, j + 1);
+    		long energy = gxred * gxred + gyred * gyred + gxgreen * gxgreen + gygreen * gygreen + gxblue * gxblue + gyblue * gyblue;
+    		short gray = mag2gray(energy);
+    		sobel.setPixel(i, j, (short)gray, (short)gray, (short)gray);
+    	}
+    }
+    return sobel;
     // Don't forget to use the method mag2gray() above to convert energies to
     // pixel intensities.
   }

@@ -36,8 +36,8 @@ public class RunIterator implements Iterator {
    *  Define any variables associated with a RunIterator object here.
    *  These variables MUST be private.
    */
-
-
+  public LinkNode currentNode;
+  public LinkNode sentinal;
 
 
   /**
@@ -54,8 +54,10 @@ public class RunIterator implements Iterator {
   // constructor that you want so that your RunLengthEncoding.iterator()
   // implementation can construct a RunIterator that points to the first run of
   // the encoding.
-  RunIterator() {
+  RunIterator(LinkNode head) {
     // Your solution here.  You may add parameters to the method signature.
+    currentNode = head.next;
+    sentinal = head;
   }
 
   /**
@@ -66,6 +68,7 @@ public class RunIterator implements Iterator {
    */
   public boolean hasNext() {
     // Replace the following line with your solution.
+    if (currentNode.next != sentinal) return true;
     return false;
   }
 
@@ -96,7 +99,18 @@ public class RunIterator implements Iterator {
     // call to next() will return the subsequent run.
 
     // Replace the following line with your solution.
-    return new int[4];
+    int[] currcolor = new int[4];
+    currcolor[0] = currentNode.color[0];
+    currcolor[1] = currentNode.color[1];
+    currcolor[2] = currentNode.color[2];
+    currcolor[3] = currentNode.color[3];
+    if (hasNext()) {
+      currentNode = currentNode.next;
+    }
+    else {
+      throw new NoSuchElementException();
+    }
+    return currcolor;
   }
 
   /**
