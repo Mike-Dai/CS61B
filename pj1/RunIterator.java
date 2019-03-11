@@ -37,7 +37,7 @@ public class RunIterator implements Iterator {
    *  These variables MUST be private.
    */
   public LinkNode currentNode;
-  public LinkNode sentinal;
+  //public LinkNode sentinal;
 
 
   /**
@@ -56,8 +56,11 @@ public class RunIterator implements Iterator {
   // the encoding.
   RunIterator(LinkNode head) {
     // Your solution here.  You may add parameters to the method signature.
+    /*
     currentNode = head.next;
     sentinal = head;
+    */
+    currentNode = head;
   }
 
   /**
@@ -68,8 +71,11 @@ public class RunIterator implements Iterator {
    */
   public boolean hasNext() {
     // Replace the following line with your solution.
+    /*
     if (currentNode.next != sentinal) return true;
     return false;
+    */
+    return currentNode != null;
   }
 
   /**

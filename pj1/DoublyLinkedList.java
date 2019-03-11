@@ -1,12 +1,12 @@
 public class DoublyLinkedList {
 	
 	public LinkNode head;
+	public LinkNode tail;
 	private int size;
 
 	public DoublyLinkedList() {
-		head = new LinkNode();
-		head.prev = head;
-		head.next = head;
+		head = null;
+		tail = null;
 		size = 0;
 	}
 /*
@@ -19,11 +19,17 @@ public class DoublyLinkedList {
 	}
 */
 	public void insert(int runLengths, int red, int green, int blue) {
-		LinkNode run = new LinkNode(runLengths, red, green, blue);
-		head.prev.next = run;
-		run.prev = head.prev;
-		head.prev = run;
-		run.next = head;
-		size++;
+		if (size == 0) {
+			head = new LinkNode(runLengths, red, green, blue);
+			tail = head;
+			size++;
+		}
+		else {
+			LinkNode run = new LinkNode(runLengths, red, green, blue);
+			run.prev = tail;
+			tail.next = run;
+			tail = run;
+			size++;
+		}
 	}
 }

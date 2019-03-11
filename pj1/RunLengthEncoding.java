@@ -132,6 +132,21 @@ public class RunLengthEncoding implements Iterable {
     // Replace the following line with your solution.
     PixImage pixel = new PixImage(this.width, this.height);
     //LinkNode p = this.iterator().currentNode;
+    LinkNode curnode = color.head;
+    int count = curnode.color[0];
+    for (int i = 0; i < width; i++) {
+      for (int j = 0; j < height; j++) {
+        pixel.setPixel(i, j, (short)curnode.color[1], (short)curnode.color[2], (short)curnode.color[3]);
+        if (count == (i*width + j + 1)) {
+          curnode = curnode.next;
+          if (curnode != null) {
+            count += curnode.color[0];
+          }
+        }
+      }
+    }
+
+    /*
     int x = 0, y = 0;
     LinkNode curnode = color.head;
     int tmplen = 0;
@@ -143,17 +158,30 @@ public class RunLengthEncoding implements Iterable {
       tmpred = curnode.color[1];
       tmpgreen = curnode.color[2];
       tmpblue = curnode.color[3];
+      //System.out.print("len="+tmplen+"\n");
+      //System.out.print("red="+tmpred+"\n");
+      //System.out.print("green="+tmpgreen+"\n");
+      //System.out.print("blue="+tmpblue+"\n");
       //int[] pixcolor = this.iterator().next();
       for (int i = 0; i < tmplen; i++) {
-        if (x == pixel.getWidth()) {
-          y++;
+        pixel.setPixel(x, y, (short)tmpred, (short)tmpgreen, (short)tmpblue);
+        //System.out.print("x="+x+"\n");
+        //System.out.print("y="+y+"\n");
+        y++;
+        if (y == pixel.getWidth()) {
+          x++;
+          
+          if (x == pixel.getHeight()) {
+            return pixel;
+          }
+          
           x = 0;
         }
-        pixel.setPixel(x, y, (short)tmpred, (short)tmpgreen, (short)tmpblue);
-        x++;
+
       }
       curnode = curnode.next;
     }
+    */
     return pixel;
   }
 
@@ -169,9 +197,9 @@ public class RunLengthEncoding implements Iterable {
   public String toString() {
     // Replace the following line with your solution.
     String pix = new String();
-    for (int i = 0; i < this.width; i++) {
-      for (int j = 0; j < this.height; j++) {
-        pix += String.valueOf(this.toPixImage().getRed(i, j)) + " ";
+    for (int i = 0; i < this.height; i++) {
+      for (int j = 0; j < this.width; j++) {
+        pix += String.valueOf(this.toPixImage().getRed(j, i)) + " ";
       }
       pix += "\n";
     }
@@ -198,27 +226,30 @@ public class RunLengthEncoding implements Iterable {
     this.width = image.getWidth();
     this.height = image.getHeight();
     this.color = new DoublyLinkedList();
-    short[] prev = new short[3];
-    short[] next = new short[3];
-    prev[0] = image.getRed(0, 0);
-    prev[1] = image.getGreen(0, 0);
-    prev[2] = image.getBlue(0, 0);
+    short prevred = image.getRed(0, 0);
+    short prevgreen = image.getGreen(0, 0);
+    short prevblue = image.getBlue(0, 0);
+    short nextred, nextgreen, nextblue;
     int count = 1;
-    for (int i = 0; i < this.width; i++) {
-      for (int j = 0; j < this.height; j++) {
+    for (int i = 0; i < this.height; i++) {
+      for (int j = 0; j < this.width; j++) {
         if (i == 0 && j == 0) continue;
-        next[0] = image.getRed(i, j);
-        next[1] = image.getGreen(i, j);
-        next[2] = image.getBlue(i, j);
-        if (prev[0] == next[0] && prev[1] == next[1] && prev[2] == next[2]) {
+        nextred = image.getRed(i, j);
+        nextgreen = image.getGreen(i, j);
+        nextblue = image.getBlue(i, j);
+        if (prevred == nextred && prevgreen == nextgreen && prevblue == nextblue) {
           count++;
         }
         else {
-          this.color.insert(count, (int)prev[0], (int)prev[1], (int)prev[2]);
+          this.color.insert(count, (int)prevred, (int)prevgreen, (int)prevblue);
           count = 1;
+          prevred = nextred;
+          prevgreen = nextgreen;
+          prevblue = nextblue;
         }
       }
     }
+    this.color.insert(count, (int)prevred, (int)prevgreen, (int)prevblue);
     check();
   }
 
@@ -252,6 +283,16 @@ public class RunLengthEncoding implements Iterable {
   public void setPixel(int x, int y, short red, short green, short blue) {
     // Your solution here, but you should probably leave the following line
     //   at the end.
+    RunIterator iter = new RunIterator(color.head);
+    int count = 0;
+    while (iter.hasNext()) {
+      int[] arr = iter.next();
+      count += arr[0];
+      if (count >= x * height + y + 1) {
+        break;
+      }
+    }
+    
     check();
   }
 
@@ -334,6 +375,19 @@ public class RunLengthEncoding implements Iterable {
     System.out.print(image1);
     RunLengthEncoding rle1 = new RunLengthEncoding(image1);
     rle1.check();
+
+/*
+    RunIterator iter = new RunIterator(rle1.color.head);
+    do {
+      int[] currcolor = iter.next();
+      System.out.print(currcolor[1]+"*"+currcolor[0]+"\n");
+    }
+    while (iter.hasNext());
+*/
+
+    System.out.print(rle1.toString());
+    
+
     System.out.println("Testing getWidth/getHeight on a 3x3 encoding.");
     doTest(rle1.getWidth() == 3 && rle1.getHeight() == 3,
            "RLE1 has wrong dimensions");
@@ -341,7 +395,7 @@ public class RunLengthEncoding implements Iterable {
     System.out.println("Testing toPixImage() on a 3x3 encoding.");
     doTest(image1.equals(rle1.toPixImage()),
            "image1 -> RLE1 -> image does not reconstruct the original image");
-    System.out.print(rle1.toString());
+    System.out.print(rle1.toPixImage().toString());
 
     System.out.println("Testing setPixel() on a 3x3 encoding.");
     setAndCheckRLE(rle1, 0, 0, 42);
